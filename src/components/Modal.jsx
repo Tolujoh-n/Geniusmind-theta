@@ -223,15 +223,7 @@ const Modal = ({ onClose }) => {
                       <img
                         src={shuffledQuestions[currentQuestion].image}
                         alt="Question"
-                        style={{
-                          display: "block",
-                          width: "30rem",
-                          maxWidth: "30rem",
-                          minHeight: "10rem",
-                          maxHeight: "10rem",
-                          borderRadius: "10px",
-                          margin: "0 auto",
-                        }}
+                        id="quizimage"
                       />
                     )}
                     <h6 style={{ color: "#d5dceb", marginTop: "10px" }}>

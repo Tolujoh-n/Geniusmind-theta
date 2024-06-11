@@ -45,6 +45,20 @@ table.custom-table th {
   background-color: transparent;
   color: whitesmoke;
 }
+#quizimage {
+  display: block;
+  width: 30rem;
+  max-width: 30rem;
+  min-height: 10rem;
+  max-height: 10rem;
+  border-radius: 10px;
+  margin: 0 auto;
+}
+@media (max-width: 744px) {
+  #quizimage {
+    width: 100%;
+  }
+}
 
 #followbtn {
   background: transparent;
