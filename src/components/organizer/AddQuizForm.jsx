@@ -80,11 +80,8 @@ const AddQuizForm = () => {
     setGameInfo((prevState) => {
       const rewards = [...prevState.rewards];
       rewards[index].value = value;
-      const pricepool = rewards.reduce(
-        (total, reward) => total + reward.value,
-        0
-      );
-      return { ...prevState, rewards, pricepool };
+
+      return { ...prevState, rewards };
     });
   };
 
@@ -126,7 +123,6 @@ const AddQuizForm = () => {
               }
               style={styles.input}
               required
-              disabled // Disable pricepool input
             />
           </div>
           <div className="form-group">

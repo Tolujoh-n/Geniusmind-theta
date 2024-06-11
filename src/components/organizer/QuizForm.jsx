@@ -65,6 +65,7 @@ const QuizForm = ({
       ...prevQuiz,
       {
         question: "",
+        questionimg: "",
         options: Array(4).fill(""),
         correctOption: null,
         correctAnswer: "", // Include correctAnswer field
@@ -149,6 +150,20 @@ const QuizForm = ({
                     value={quest.question}
                     onChange={(e) =>
                       handleQuestChange(index, "question", e.target.value)
+                    }
+                    style={styles.textarea}
+                    required
+                  />
+                </div>
+                <div className="form-group">
+                  <label style={styles.label}>Question Image</label>
+                  <input
+                    type="file"
+                    className="form-control"
+                    accept="image/*"
+                    value={quest.questionimg}
+                    onChange={(e) =>
+                      handleQuestChange(index, "questionimg", e.target.value)
                     }
                     style={styles.textarea}
                     required

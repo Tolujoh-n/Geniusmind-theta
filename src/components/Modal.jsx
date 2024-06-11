@@ -1,11 +1,18 @@
 import React, { useState, useEffect } from "react";
-import logo from "../assets/address.jpg";
 
 const Modal = ({ onClose }) => {
   const [timeLeft, setTimeLeft] = useState(600); // For testing, changed time to 10 seconds
-  const [currentQuestion, setCurrentQuestion] = useState(1);
+  const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState({});
   const [showMessage, setShowMessage] = useState(false);
+  const [shuffledQuestions, setShuffledQuestions] = useState([]);
+
+  // List of cloud image URLs
+  const imageUrls = [
+    "https://www.w3schools.com/images/w3schools_green.jpg",
+    "https://www.w3schools.com/images/w3schools_green.jpg",
+    "https://www.w3schools.com/images/w3schools_green.jpg",
+  ];
 
   // Define quiz questions
   const quizQuestions = [
@@ -18,6 +25,7 @@ const Modal = ({ onClose }) => {
         "Endoplasmic reticulum",
       ],
       correctAnswer: "Mitochondria",
+      image: imageUrls[0],
     },
     {
       question:
@@ -35,6 +43,7 @@ const Modal = ({ onClose }) => {
         "Digesting food",
       ],
       correctAnswer: "Transporting oxygen",
+      image: imageUrls[1],
     },
     {
       question:
@@ -48,9 +57,10 @@ const Modal = ({ onClose }) => {
       correctAnswer: "Storing fat",
     },
     {
-      question: "What is the longest bone in the human body?",
+      question: "",
       options: ["Radius", "Femur", "Tibia", "Humerus"],
       correctAnswer: "Femur",
+      image: imageUrls[2],
     },
     {
       question:
@@ -84,6 +94,12 @@ const Modal = ({ onClose }) => {
     },
   ];
 
+  // Shuffle questions on component mount
+  useEffect(() => {
+    const shuffled = [...quizQuestions].sort(() => Math.random() - 0.5);
+    setShuffledQuestions(shuffled);
+  }, []);
+
   // Timer countdown effect
   useEffect(() => {
     const timer = setInterval(() => {
@@ -103,14 +119,14 @@ const Modal = ({ onClose }) => {
 
   // Handle next button click
   const handleNext = () => {
-    if (currentQuestion < quizQuestions.length) {
+    if (currentQuestion < shuffledQuestions.length - 1) {
       setCurrentQuestion((prevQuestion) => prevQuestion + 1);
     }
   };
 
   // Handle previous button click
   const handlePrevious = () => {
-    if (currentQuestion > 1) {
+    if (currentQuestion > 0) {
       setCurrentQuestion((prevQuestion) => prevQuestion - 1);
     }
   };
@@ -137,18 +153,9 @@ const Modal = ({ onClose }) => {
     console.log("Redirecting to home page...");
   };
 
-  // const handleOptionClick = () => {
-  //   const optionButton = document.getElementById("optionbut");
-  //   optionButton.classList.toggle("active");
-  // };
-
   return (
     <div className="modal" style={modalStyle}>
       <div className="modal-content" style={modalContentStyle}>
-        {/* <span style={{ cursor: "pointer" }} className="close" onClick={onClose}>
-          &times;
-        </span> */}
-
         {showMessage ? (
           <>
             <div className="maincard">
@@ -156,7 +163,6 @@ const Modal = ({ onClose }) => {
                 style={{
                   background: "#213743",
                   border: "5px solid #b1bad3",
-                  // borderStyle: "dashed",
                 }}
                 className="card info-card revenue-card"
               >
@@ -171,7 +177,6 @@ const Modal = ({ onClose }) => {
                 <div className="row">
                   <div className="col">
                     <div className="d-flex justify-content-between">
-                      {/* option */}
                       <div className="flex-fill mr-2">
                         <button
                           onClick={handleRedirect}
@@ -181,7 +186,6 @@ const Modal = ({ onClose }) => {
                           See Results
                         </button>
                       </div>
-                      {/* Second word */}
                     </div>
                   </div>
                 </div>
@@ -192,22 +196,19 @@ const Modal = ({ onClose }) => {
         ) : (
           <>
             <div className="d-flex justify-content-between align-items-center">
-              {/* First word with icon */}
               <div>
                 <span style={{ color: "#b1bad3" }}>
-                  Question: {currentQuestion} / {quizQuestions.length}
+                  Question: {currentQuestion + 1} / {shuffledQuestions.length}
                 </span>
               </div>
-              {/* Second word */}
               <div>
                 <span style={{ color: "#b1bad3" }}>
-                  {" "}
                   {Math.floor(timeLeft / 60)}:
                   {timeLeft % 60 < 10 ? `0${timeLeft % 60}` : timeLeft % 60}
                 </span>
               </div>
             </div>
-            {currentQuestion <= quizQuestions.length && (
+            {currentQuestion < shuffledQuestions.length && (
               <div className="maincard">
                 <div
                   style={{
@@ -218,14 +219,29 @@ const Modal = ({ onClose }) => {
                   className="card info-card revenue-card"
                 >
                   <div className="card-body">
-                    <h6 style={{ color: "#d5dceb" }}>
-                      {quizQuestions[currentQuestion - 1].question}
+                    {shuffledQuestions[currentQuestion].image && (
+                      <img
+                        src={shuffledQuestions[currentQuestion].image}
+                        alt="Question"
+                        style={{
+                          display: "block",
+                          width: "30rem",
+                          maxWidth: "30rem",
+                          minHeight: "10rem",
+                          maxHeight: "10rem",
+                          borderRadius: "10px",
+                          margin: "0 auto",
+                        }}
+                      />
+                    )}
+                    <h6 style={{ color: "#d5dceb", marginTop: "10px" }}>
+                      {shuffledQuestions[currentQuestion].question}
                     </h6>
                   </div>
                 </div>
 
                 <div className="container">
-                  {quizQuestions[currentQuestion - 1].options.map(
+                  {shuffledQuestions[currentQuestion].options.map(
                     (option, index) =>
                       index % 2 === 0 && (
                         <div key={index} className="row mb-2">
@@ -245,14 +261,14 @@ const Modal = ({ onClose }) => {
                             <button
                               onClick={() =>
                                 handleOptionSelect(
-                                  quizQuestions[currentQuestion - 1].options[
+                                  shuffledQuestions[currentQuestion].options[
                                     index + 1
                                   ]
                                 )
                               }
                               className={`btn btn-block ${
                                 answers[currentQuestion] ===
-                                quizQuestions[currentQuestion - 1].options[
+                                shuffledQuestions[currentQuestion].options[
                                   index + 1
                                 ]
                                   ? "btn-success"
@@ -260,7 +276,7 @@ const Modal = ({ onClose }) => {
                               }`}
                             >
                               {
-                                quizQuestions[currentQuestion - 1].options[
+                                shuffledQuestions[currentQuestion].options[
                                   index + 1
                                 ]
                               }
@@ -273,7 +289,6 @@ const Modal = ({ onClose }) => {
 
                 <br />
                 <div className="d-flex justify-content-between align-items-center">
-                  {/* First word with icon */}
                   <div>
                     <button onClick={handlePrevious} id="followbtn">
                       Previous
@@ -282,7 +297,6 @@ const Modal = ({ onClose }) => {
                       Next
                     </button>
                   </div>
-                  {/* Second word */}
                   <div>
                     <button onClick={handleSubmit} id="followbtn">
                       Submit
@@ -301,10 +315,6 @@ const Modal = ({ onClose }) => {
 export default Modal;
 
 // Inline CSS styles for the modal
-const header = {
-  textAlign: "center",
-  color: "whitesmoke",
-};
 const modalStyle = {
   display: "block",
   position: "fixed",
@@ -329,27 +339,4 @@ const modalContentStyle = {
   borderRadius: "8px",
   padding: "20px",
   boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
-};
-const cancelbut = {
-  /* Your button style here */
-  padding: "8px 12px",
-  backgroundColor: "rgb(129, 128, 125)",
-  color: "#fff",
-  border: "none",
-  borderRadius: "4px",
-  cursor: "pointer",
-  margin: "10px",
-  marginRight: "8px",
-};
-
-const submitbut = {
-  /* Your button style here */
-  padding: "8px 12px",
-  backgroundColor: "white",
-  color: "black",
-  border: "none",
-  borderRadius: "4px",
-  cursor: "pointer",
-  margin: "10px",
-  marginRight: "8px",
 };
