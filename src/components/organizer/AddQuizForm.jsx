@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import QuizForm from "./QuizForm";
+import AIquiz from "./AIquiz";
 
 const styles = {
   container: {
@@ -227,15 +228,18 @@ const AddQuizForm = () => {
 
       {/* Render the QuizForm component */}
       {gameInfo.pricepool > 0 && (
-        <QuizForm
-          pricepool={gameInfo.pricepool}
-          entranceFee={gameInfo.entranceFee}
-          timer={gameInfo.timer}
-          onSubmit={handleSubmit}
-          quizTitle={gameInfo.quizName}
-          quizDescription={gameInfo.quizDescription}
-          rewards={gameInfo.rewards}
-        />
+        <>
+          <AIquiz />
+          <QuizForm
+            pricepool={gameInfo.pricepool}
+            entranceFee={gameInfo.entranceFee}
+            timer={gameInfo.timer}
+            onSubmit={handleSubmit}
+            quizTitle={gameInfo.quizName}
+            quizDescription={gameInfo.quizDescription}
+            rewards={gameInfo.rewards}
+          />
+        </>
       )}
     </div>
   );

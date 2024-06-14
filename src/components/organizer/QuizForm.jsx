@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import axios from "axios";
 
 const styles = {
   container: {
@@ -57,6 +56,7 @@ const QuizForm = ({
   timer,
   quizDescription,
   rewards,
+  generateIncorrectOptions,
 }) => {
   const [quiz, setQuiz] = useState([]);
 
@@ -68,7 +68,7 @@ const QuizForm = ({
         questionimg: "",
         options: Array(4).fill(""),
         correctOption: null,
-        correctAnswer: "", // Include correctAnswer field
+        correctAnswer: "",
       },
     ]);
   };
@@ -103,6 +103,27 @@ const QuizForm = ({
           ? {
               ...quest,
               correctOption: optionIndex,
+              correctAnswer: quest.options[optionIndex],
+            }
+          : quest
+      )
+    );
+  };
+
+  const handleGenerateAIWrongOptions = async (index) => {
+    const { question, correctAnswer } = quiz[index];
+    const incorrectOptions = await generateIncorrectOptions(
+      question,
+      correctAnswer
+    );
+    setQuiz((prevQuiz) =>
+      prevQuiz.map((quest, i) =>
+        i === index
+          ? {
+              ...quest,
+              options: quest.options.map((opt, idx) =>
+                idx !== quest.correctOption ? incorrectOptions.shift() : opt
+              ),
             }
           : quest
       )
@@ -174,9 +195,7 @@ const QuizForm = ({
                 <div className="col-md-6" key={optionIndex}>
                   <div className="form-group">
                     <div className="d-flex justify-content-between align-items-center">
-                      {/* Checkbox and input wrapper */}
                       <div className="d-flex align-items-center">
-                        {/* Checkbox */}
                         <input
                           type="checkbox"
                           checked={quest.correctOption === optionIndex}
@@ -184,10 +203,9 @@ const QuizForm = ({
                             handleCheckboxChange(index, optionIndex)
                           }
                         />
-                        {/* Input */}
                         <input
                           type="text"
-                          className="form-control ml-2" // Add margin to separate checkbox and input
+                          className="form-control ml-2"
                           placeholder={`Option ${optionIndex + 1}`}
                           value={option}
                           onChange={(e) =>
@@ -206,7 +224,12 @@ const QuizForm = ({
                 </div>
               ))}
             </div>
-            <button id="followbtn">AI Wrong Options</button>
+            <button
+              onClick={() => handleGenerateAIWrongOptions(index)}
+              id="followbtn"
+            >
+              AI Wrong Options
+            </button>
           </div>
         </div>
       ))}

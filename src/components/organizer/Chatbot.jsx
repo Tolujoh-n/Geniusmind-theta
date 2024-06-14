@@ -1,21 +1,18 @@
-import React from "react";
-import { ChangeEvent, useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { FiSend, FiPaperclip } from "react-icons/fi";
 import { TypingIndicator } from "@chatscope/chat-ui-kit-react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faExclamationTriangle } from "@fortawesome/free-solid-svg-icons";
-import logo from "./assets/img/cybergoat.png";
+import logo from "../../assets/img/tfuel.jpg";
 
-const Ai_response = () => {
+const Chatbot = () => {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(true);
-  const [file, setFile] = useState<File | null>(null);
-  const hiddenFileInput = useRef<HTMLInputElement>(null);
-  const [chatMessages, setChatMessages] = useState<
-    { message: string; sender: string; direction: string; error: boolean }[]
-  >([]);
+  const [file, setFile] = useState(null);
+  const hiddenFileInput = useRef(null);
+  const [chatMessages, setChatMessages] = useState([]);
   const [isChatbotTyping, setIsChatbotTyping] = useState(false);
   const [input, setInput] = useState("");
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const messagesEndRef = useRef(null);
 
   const toggleSidebarCollapse = () => {
     setIsSidebarCollapsed(!isSidebarCollapsed);
@@ -27,18 +24,18 @@ const Ai_response = () => {
     }
   };
 
-  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = (event) => {
     const fileUploaded = event.target.files?.[0];
     if (fileUploaded) {
       handleFile(fileUploaded);
     }
   };
 
-  const handleFile = (file: File) => {
+  const handleFile = (file) => {
     console.log("File uploaded name:" + file.name);
   };
 
-  const handleUserMessage = async (userMessage: string) => {
+  const handleUserMessage = async (userMessage) => {
     const newUserMessage = {
       message: userMessage,
       sender: "user",
@@ -53,7 +50,7 @@ const Ai_response = () => {
     await processUserMessageForGoogle(updatedChatMessages);
   };
 
-  async function processUserMessageForGoogle(messages: any[]) {
+  async function processUserMessageForGoogle(messages) {
     let contents = messages.map((messageObject) => {
       let role = "";
       if (messageObject.sender === "user") {
@@ -141,7 +138,7 @@ const Ai_response = () => {
     }
   }
 
-  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyPress = (e) => {
     if (e.key === "Enter") {
       handleUserMessage(input);
       setInput("");
@@ -227,4 +224,4 @@ const Ai_response = () => {
   );
 };
 
-export default Ai_response;
+export default Chatbot;
