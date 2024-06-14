@@ -122,7 +122,9 @@ const QuizForm = ({
           ? {
               ...quest,
               options: quest.options.map((opt, idx) =>
-                idx !== quest.correctOption ? incorrectOptions.shift() : opt
+                idx !== quest.correctOption && incorrectOptions.length > 0
+                  ? incorrectOptions.shift()
+                  : opt
               ),
             }
           : quest

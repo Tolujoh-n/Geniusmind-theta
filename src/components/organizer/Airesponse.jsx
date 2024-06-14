@@ -72,7 +72,7 @@ const Airesponse = forwardRef((props, ref) => {
       const reader = response.body.getReader();
       const decoder = new TextDecoder();
       let loopRunner = true;
-      let incorrectOptions = [];
+      let incorrectOptionsStr = "";
 
       while (loopRunner) {
         const { value, done } = await reader.read();
@@ -100,9 +100,10 @@ const Airesponse = forwardRef((props, ref) => {
         if (errorFlag) {
           chatMessagesWithResponse[latestModelMessageIndex].error = true;
         }
-        incorrectOptions.push(messagePart.trim());
+        incorrectOptionsStr += messagePart.trim();
       }
       setChatMessages([...chatMessagesWithResponse]);
+      const incorrectOptions = incorrectOptionsStr.split(" ");
       return incorrectOptions;
     } catch (error) {
       console.log(error);
