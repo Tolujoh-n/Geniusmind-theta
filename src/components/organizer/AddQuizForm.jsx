@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import axios from "axios";
-import QuizForm from "./QuizForm.tsx";
+import AIquiz from "./AIquiz";
 
 const styles = {
   container: {
@@ -113,7 +112,7 @@ const AddQuizForm = () => {
             <input
               type="number"
               className="form-control"
-              placeholder="Price Pool (STX)"
+              placeholder="Price Pool (THETA)"
               value={gameInfo.pricepool}
               onChange={(e) =>
                 setGameInfo({
@@ -227,15 +226,17 @@ const AddQuizForm = () => {
 
       {/* Render the QuizForm component */}
       {gameInfo.pricepool > 0 && (
-        <QuizForm
-          pricepool={gameInfo.pricepool}
-          entranceFee={gameInfo.entranceFee}
-          timer={gameInfo.timer}
-          onSubmit={handleSubmit}
-          quizTitle={gameInfo.quizName}
-          quizDescription={gameInfo.quizDescription}
-          rewards={gameInfo.rewards}
-        />
+        <>
+          <AIquiz
+            pricepool={gameInfo.pricepool}
+            entranceFee={gameInfo.entranceFee}
+            timer={gameInfo.timer}
+            onSubmit={handleSubmit}
+            quizTitle={gameInfo.quizName}
+            quizDescription={gameInfo.quizDescription}
+            rewards={gameInfo.rewards}
+          />
+        </>
       )}
     </div>
   );

@@ -9,6 +9,8 @@
     "@chatscope/chat-ui-kit-react": "^2.0.3",
     "@datocms/cma-client-node": "^2.0.0",
     "@faker-js/faker": "^8.0.2",
+    "@fortawesome/free-solid-svg-icons": "^6.5.2",
+    "@fortawesome/react-fontawesome": "github:fortawesome/react-fontawesome",
     "@hcaptcha/react-hcaptcha": "^0.3.7",
     "@hookform/resolvers": "^3.3.1",
     "@mdx-js/loader": "^2.3.0",

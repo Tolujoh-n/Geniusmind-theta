@@ -8,6 +8,7 @@ import Genius from "./views/Allquiz";
 import Topquiz from "./components/Topquiz";
 import Footer from "./components/Footer";
 import QuizInfo from "./components/QuizInfo";
+import AIquiz from "./components/organizer/AIquiz";
 import Leaderboard from "./components/leaderboard/Leaderboard";
 import Connectwallet from "./components/walletconnect/Connectwallet";
 // Css files
