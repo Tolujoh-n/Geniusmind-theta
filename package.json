@@ -6,6 +6,7 @@
     "node": "^18"
   },
   "dependencies": {
+    "@chatscope/chat-ui-kit-react": "^2.0.3",
     "@datocms/cma-client-node": "^2.0.0",
     "@faker-js/faker": "^8.0.2",
     "@hcaptcha/react-hcaptcha": "^0.3.7",
@@ -47,7 +48,7 @@
     "@vercel/analytics": "^1.0.2",
     "@vercel/kv": "^0.2.2",
     "@web3modal/ethers5": "^4.2.3",
-    "axios": "^1.6.7",
+    "axios": "^1.7.2",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
     "cmdk": "^0.2.0",
@@ -71,7 +72,7 @@
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.45.4",
     "react-hot-toast": "^2.2.0",
-    "react-icons": "^5.0.1",
+    "react-icons": "^5.2.1",
     "react-minimal-pie-chart": "^8.4.0",
     "react-resizable": "^3.0.5",
     "react-router-dom": "^6.22.3",

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
-import QuizForm from "./QuizForm";
+import QuizForm from "./QuizForm.tsx";
 
 const styles = {
   container: {
