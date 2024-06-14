@@ -19,7 +19,9 @@ const AIquiz = () => {
         onSubmit={(data) => console.log("Submitted Data:", data)}
         generateIncorrectOptions={handleGenerateIncorrectOptions}
       />
-      <Airesponse ref={aiResponseRef} />
+      <div style={{ display: "none" }} className="aistuff">
+        <Airesponse ref={aiResponseRef} />
+      </div>
     </div>
   );
 };

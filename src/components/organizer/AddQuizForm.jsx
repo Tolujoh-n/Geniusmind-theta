@@ -229,8 +229,7 @@ const AddQuizForm = () => {
       {/* Render the QuizForm component */}
       {gameInfo.pricepool > 0 && (
         <>
-          <AIquiz />
-          <QuizForm
+          <AIquiz
             pricepool={gameInfo.pricepool}
             entranceFee={gameInfo.entranceFee}
             timer={gameInfo.timer}
