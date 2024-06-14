@@ -103,8 +103,13 @@ const Airesponse = forwardRef((props, ref) => {
         incorrectOptionsStr += messagePart.trim();
       }
       setChatMessages([...chatMessagesWithResponse]);
-      const incorrectOptions = incorrectOptionsStr.split(" ");
-      return incorrectOptions;
+
+      const cleanedOptions = incorrectOptionsStr
+        .split(/[.\-]\s?/)
+        .map((opt) => opt.trim())
+        .filter((opt) => opt && !/^\d/.test(opt));
+
+      return cleanedOptions;
     } catch (error) {
       console.log(error);
       setChatMessages([
