@@ -4,6 +4,7 @@ import Quizlist from "../components/organizer/Quizlist";
 import Editprofile from "../components/Editprofile";
 import Subscribe from "../components/Subscribe";
 import Profile from "../components/Profile";
+import Chatbot from "../components/organizer/Chatbot";
 
 function Settings() {
   return (
@@ -40,6 +41,19 @@ function Settings() {
                         data-target="#game-set"
                       >
                         Edit Profile
+                      </button>
+                    </li>
+                    <li className="nav-item">
+                      <button
+                        className="nav-link"
+                        style={{
+                          color: "whitesmoke",
+                          background: "transparent",
+                        }}
+                        data-toggle="tab"
+                        data-target="#chatbot"
+                      >
+                        ChatAI
                       </button>
                     </li>
 
@@ -94,6 +108,10 @@ function Settings() {
                     </div>
                     <div className="tab-pane fade pt-3" id="game-set">
                       <Editprofile />
+                    </div>
+
+                    <div className="tab-pane fade pt-3" id="chatbot">
+                      <Chatbot />
                     </div>
 
                     <div className="tab-pane fade pt-3" id="game-settings">

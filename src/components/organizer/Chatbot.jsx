@@ -3,7 +3,7 @@ import { FiSend, FiPaperclip } from "react-icons/fi";
 import { TypingIndicator } from "@chatscope/chat-ui-kit-react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faExclamationTriangle } from "@fortawesome/free-solid-svg-icons";
-import logo from "../../assets/img/tfuel.jpg";
+import logo from "../../assets/geniuslob.png";
 
 const Chatbot = () => {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(true);
@@ -151,75 +151,95 @@ const Chatbot = () => {
 
   return (
     <>
-      <section id="chat-section" className="chat-section">
-        <div className="container">
-          <div className="chat-window">
-            <div className="chat-messages">
-              {chatMessages.map((message, index) => (
-                <div
-                  key={index}
-                  className={`chat-message ${
-                    message.sender === "user" ? "user-message" : "ai-message"
-                  }`}
-                >
-                  <div style={{ display: "flex" }}>
-                    {message.sender === "model" && (
-                      <img
-                        style={{
-                          height: "30px",
-                          width: "30px",
-                          borderRadius: "50%",
-                          marginRight: "10px",
-                          alignSelf: "flex-start",
-                        }}
-                        src={logo}
-                        alt="Logo"
-                      />
-                    )}
-                    <div>
-                      {message.error ? (
-                        <>
-                          <i className="bi bi-exclamation-triangle-fill"></i>
-                          <span>{message.message}</span>
-                        </>
-                      ) : (
-                        message.message
-                      )}
-                    </div>
-                  </div>
+      <div className="col-lg-12">
+        <section className="section profile">
+          <div className="row">
+            <div className="col-12">
+              <div className="card">
+                <div className="">
+                  <>
+                    <section id="chat-section" className="chat-section">
+                      <div className="container">
+                        <div className="chat-window">
+                          <div className="chat-messages">
+                            {chatMessages.map((message, index) => (
+                              <div
+                                key={index}
+                                className={`chat-message ${
+                                  message.sender === "user"
+                                    ? "user-message"
+                                    : "ai-message"
+                                }`}
+                              >
+                                <div style={{ display: "flex" }}>
+                                  {message.sender === "model" && (
+                                    <img
+                                      style={{
+                                        height: "30px",
+                                        width: "30px",
+                                        borderRadius: "50%",
+                                        marginRight: "10px",
+                                        alignSelf: "flex-start",
+                                      }}
+                                      src={logo}
+                                      alt="Logo"
+                                    />
+                                  )}
+                                  <div>
+                                    {message.error ? (
+                                      <>
+                                        <i className="bi bi-exclamation-triangle-fill"></i>
+                                        <span>{message.message}</span>
+                                      </>
+                                    ) : (
+                                      message.message
+                                    )}
+                                  </div>
+                                </div>
+                              </div>
+                            ))}
+                            {isChatbotTyping && (
+                              <div className="chat-message ai-message">
+                                <TypingIndicator content="ChatGPT is thinking" />
+                              </div>
+                            )}
+                            <div ref={messagesEndRef} />
+                          </div>
+                          <div className="text-center chat-input">
+                            <button onClick={handleAttachClick}>
+                              <i className="bi bi-paperclip"></i>
+                            </button>
+                            <input
+                              type="text"
+                              style={{ width: "100%" }}
+                              value={input}
+                              onChange={(e) => setInput(e.target.value)}
+                              onKeyPress={handleKeyPress}
+                              placeholder="Type your message..."
+                            />
+                            <button onClick={() => handleUserMessage(input)}>
+                              <i className="bi bi-send"></i>
+                            </button>
+                          </div>
+                          <p style={{ textAlign: "center", color: "red" }}>
+                            Note: Your chat will be cleared once you disconnect
+                          </p>
+                        </div>
+                      </div>
+                    </section>
+                    <input
+                      type="file"
+                      onChange={handleFileChange}
+                      ref={hiddenFileInput}
+                      style={{ display: "none" }} // Make the file input element invisible
+                    />
+                  </>
                 </div>
-              ))}
-              {isChatbotTyping && (
-                <div className="chat-message ai-message">
-                  <TypingIndicator content="ChatGPT is thinking" />
-                </div>
-              )}
-              <div ref={messagesEndRef} />
-            </div>
-            <div className="chat-input">
-              <button onClick={handleAttachClick}>
-                <i className="bi bi-paperclip"></i>
-              </button>
-              <input
-                type="text"
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                onKeyPress={handleKeyPress}
-                placeholder="Type your message..."
-              />
-              <button onClick={() => handleUserMessage(input)}>
-                <i className="bi bi-send"></i>
-              </button>
+              </div>
             </div>
           </div>
-        </div>
-      </section>
-      <input
-        type="file"
-        onChange={handleFileChange}
-        ref={hiddenFileInput}
-        style={{ display: "none" }} // Make the file input element invisible
-      />
+        </section>
+      </div>
     </>
   );
 };

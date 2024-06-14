@@ -1,6 +1,4 @@
 import React, { useState } from "react";
-import axios from "axios";
-import QuizForm from "./QuizForm";
 import AIquiz from "./AIquiz";
 
 const styles = {
@@ -114,7 +112,7 @@ const AddQuizForm = () => {
             <input
               type="number"
               className="form-control"
-              placeholder="Price Pool (STX)"
+              placeholder="Price Pool (THETA)"
               value={gameInfo.pricepool}
               onChange={(e) =>
                 setGameInfo({
