@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import xp from "../assets/img/xp.jpg";
 import useimage from "../assets/address.jpg";
 import Modal from "./Modal";
@@ -29,6 +29,25 @@ const cardData = [
 
 const QuizInfo = () => {
   const [isGamemodalOpen, setIsGamemodalOpen] = useState(false);
+  const [quizData, setQuizData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchQuizData = async () => {
+      try {
+        const response = await fetch("/api/quiz/your-quiz-id-here"); // Replace with dynamic quiz ID if available
+        const data = await response.json();
+        setQuizData(data);
+      } catch (error) {
+        setError("Failed to fetch quiz data");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchQuizData();
+  }, []);
 
   const handleGamemodalClick = () => {
     setIsGamemodalOpen(true);
@@ -37,11 +56,21 @@ const QuizInfo = () => {
   const handleCloseGamemodal = () => {
     setIsGamemodalOpen(false);
   };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     // claim
     handleCloseGamemodal();
   };
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>{error}</div>;
+  }
+
   return (
     <>
       <div className="col-lg-12">
@@ -57,31 +86,39 @@ const QuizInfo = () => {
               >
                 <div style={{ width: "50%" }} className="ps-3 flex-grow-1">
                   <h4>
-                    <a href="#">Meta Quest Presence Platform quiz 2024</a>
+                    <a href="#">{quizData.title}</a>
                   </h4>
                   <div className="d-flex justify-content-between align-items-center">
                     <div>
                       {/* First tag with icon */}
-                      <span className="badge bg-warning">upcoming</span>
+                      <span className="badge bg-warning">
+                        {quizData.status}
+                      </span>
                     </div>
                     <div className="d-flex align-items-center">
                       {/* Second tag with icon */}
                       <i className="bi bi-globe"> </i>{" "}
                       <span className="badge me-2">Public</span>
-                      <span style={{ color: "#b1bad3" }}>12 April 2024</span>
+                      <span style={{ color: "#b1bad3" }}>{quizData.date}</span>
                     </div>
                   </div>
                   <br />
                   <div className="d-flex justify-content-between align-items-center">
                     {/* First word with icon */}
                     <div>
-                      <span style={{ color: "#b1bad3" }}>Fee: 5 STX</span>
+                      <span style={{ color: "#b1bad3" }}>
+                        Fee: {quizData.fee} STX
+                      </span>
                     </div>
                     {/* Second word */}
                     <div>
-                      <span style={{ color: "#b1bad3" }}>300 participants</span>
+                      <span style={{ color: "#b1bad3" }}>
+                        {quizData.participants} participants
+                      </span>
                       <br />
-                      <span style={{ color: "#b1bad3" }}>Pool: 2500 STX</span>
+                      <span style={{ color: "#b1bad3" }}>
+                        Pool: {quizData.pool} STX
+                      </span>
                     </div>
                   </div>
 
@@ -136,7 +173,7 @@ const QuizInfo = () => {
         </div>
       </div>
       <Quiztheory />
-      <Paticipants />
+      <Paticipants quizId={quizData._id} />
       <>
         {/* Render the Gamemodal if isGamemodalOpen is true */}
         {isGamemodalOpen && (

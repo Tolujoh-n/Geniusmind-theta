@@ -1,41 +1,34 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
-const tableData = [
-  {
-    seria: 1,
-    name: "cole gas",
-    passed: 12,
-    failed: 6,
-    Points: 600,
-    grade: "40%",
-  },
-  {
-    seria: 2,
-    name: "Favour",
-    passed: 15,
-    failed: 10,
-    Points: 400,
-    grade: "30%",
-  },
-  {
-    seria: 3,
-    name: "Nasty",
-    passed: 6,
-    failed: 12,
-    Points: 500,
-    grade: "98%",
-  },
-  {
-    seria: 4,
-    name: "Kole man",
-    passed: 16,
-    failed: 2,
-    Points: 100,
-    grade: "54%",
-  },
-];
+const Paticipants = ({ quizId }) => {
+  const [participants, setParticipants] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-const Paticipants = () => {
+  useEffect(() => {
+    const fetchParticipants = async () => {
+      try {
+        const response = await fetch(`/api/participants/${quizId}`);
+        const data = await response.json();
+        setParticipants(data);
+      } catch (error) {
+        setError("Failed to fetch participants");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchParticipants();
+  }, [quizId]);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>{error}</div>;
+  }
+
   return (
     <div className="col-lg-12">
       <h1 className="card-title">PARTICIPANTS</h1>
@@ -52,31 +45,29 @@ const Paticipants = () => {
             </tr>
           </thead>
           <tbody>
-            {tableData.map((row, index) => (
+            {participants.map((participant, index) => (
               <tr key={index} className="table-row">
-                <td className="col col-1" data-label="Customer Name">
+                <td className="col col-1" data-label="Seria">
                   <div className="text-center">
-                    <h5>{row.seria}</h5>
+                    <h5>{index + 1}</h5>
                   </div>
                 </td>
-
-                <td className="col col-2" data-label="Customer Name">
+                <td className="col col-2" data-label="Name">
                   <div className="text-center">
-                    <h5>{row.name}</h5>
+                    <h5>{participant.name}</h5>
                   </div>
                 </td>
-                <td className="col col-3" data-label="Amount">
-                  <h5>{row.passed}</h5>
+                <td className="col col-3" data-label="Passed">
+                  <h5>{participant.passed}</h5>
                 </td>
-                <td className="col col-3" data-label="Amount">
-                  <h5>{row.failed}</h5>
+                <td className="col col-3" data-label="Failed">
+                  <h5>{participant.failed}</h5>
                 </td>
-
-                <td className="col col-5" data-label="Job Ids">
-                  <h5>{row.Points}</h5>
+                <td className="col col-5" data-label="Points">
+                  <h5>{participant.points}</h5>
                 </td>
-                <td className="col col-6" data-label="Job Id">
-                  <h5>{row.grade}</h5>
+                <td className="col col-6" data-label="Grade">
+                  <h5>{participant.grade}</h5>
                 </td>
               </tr>
             ))}

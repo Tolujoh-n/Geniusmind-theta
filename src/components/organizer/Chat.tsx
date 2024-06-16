@@ -4,6 +4,7 @@ import { TypingIndicator } from "@chatscope/chat-ui-kit-react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faExclamationTriangle } from "@fortawesome/free-solid-svg-icons";
 import logo from "./assets/img/cybergoat.png";
+import React from "react";
 
 const Chat = () => {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(true);

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import AIquiz from "./AIquiz";
+import axios from "axios";
 
 const styles = {
   container: {
@@ -84,10 +85,25 @@ const AddQuizForm = () => {
     });
   };
 
-  const handleSubmit = (quizData) => {
+  // const handleSubmit = (quizData) => {
+  //   console.log("Quiz Data Submitted:", quizData);
+  //   console.log("Quiz Information Submitted:", gameInfo);
+  //   // You can send quizData to the database here
+  // };
+  const handleSubmit = async (quizData) => {
     console.log("Quiz Data Submitted:", quizData);
     console.log("Quiz Information Submitted:", gameInfo);
-    // You can send quizData to the database here
+
+    try {
+      const response = await axios.post("http://localhost:5000/api/quizzes", {
+        ...quizData,
+        // eslint-disable-next-line no-undef
+        creatorWalletID: account, // assuming you have `account` state for wallet address
+      });
+      console.log("Quiz created successfully:", response.data);
+    } catch (error) {
+      console.error("Error creating quiz:", error);
+    }
   };
 
   return (

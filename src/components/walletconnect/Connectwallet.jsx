@@ -2,10 +2,13 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import logo from "../../assets/address.jpg";
 import { ethers } from "ethers";
+import axios from "axios";
 
 const Connectwallet = () => {
   const [connected, setConnected] = useState(false);
   const [account, setAccount] = useState("");
+
+  axios.defaults.baseURL = "http://localhost:5000"; // Adjust base URL as needed
 
   useEffect(() => {
     if (window.ethereum) {
@@ -37,6 +40,13 @@ const Connectwallet = () => {
       setAccount(accounts[0]);
       setConnected(true);
       await switchNetwork();
+
+      // Create or fetch the user
+      const response = await axios.post("/api/users", {
+        walletID: accounts[0],
+        username: "", // You can add username input field if needed
+      });
+      console.log("User created or fetched successfully:", response.data);
     } catch (error) {
       console.error("Failed to connect wallet:", error);
     }
