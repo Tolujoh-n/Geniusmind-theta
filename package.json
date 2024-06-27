@@ -50,7 +50,7 @@
     "@vercel/analytics": "^1.0.2",
     "@vercel/kv": "^0.2.2",
     "@web3modal/ethers5": "^4.2.3",
-    "axios": "^1.6.7",
+    "axios": "^1.7.2",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
     "cmdk": "^0.2.0",

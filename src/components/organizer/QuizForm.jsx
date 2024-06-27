@@ -133,22 +133,25 @@ const QuizForm = ({
   };
 
   const handleSubmit = () => {
-    console.log("Quiz Submitted:", {
+    // console.log("Quiz Submitted:", {
+    //   quizTitle,
+    //   pricepool,
+    //   entranceFee,
+    //   timer,
+    //   quiz,
+    //   quizDescription,
+    //   rewards,
+    // });
+
+    onSubmit({
       quizTitle,
       pricepool,
       entranceFee,
       timer,
       quiz,
-    });
-    console.log("Quiz Form Information Submitted:", {
-      quizTitle,
-      pricepool,
       quizDescription,
-      entranceFee,
-      timer,
       rewards,
     });
-    onSubmit({ quizTitle, pricepool, entranceFee, timer, quiz });
   };
 
   return (
