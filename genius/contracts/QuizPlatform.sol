@@ -1,12 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-interface ERC20 {
-    function transfer(address recipient, uint256 amount) external returns (bool);
-    function transferFrom(address sender, address recipient, uint256 amount) external returns (bool);
-    function balanceOf(address account) external view returns (uint256);
-}
-
 contract QuizPlatform {
     address public thetaToken = 0x1502B75f0eF25Fa1Fe5b79594da566047859645e;
     address public tfuelToken = 0x1502B75f0eF25Fa1Fe5b79594da566047859645e;
@@ -26,7 +20,7 @@ contract QuizPlatform {
     struct Quiz {
         string title;
         string description;
-        string imageUrl;
+        string imageUrl; // Image URL for the quiz thumbnail
         uint entranceFee;
         uint pricePool;
         uint timer;
@@ -46,21 +40,19 @@ contract QuizPlatform {
     function createQuiz(
         string memory title,
         string memory description,
-        string memory imageUrl,
+        string memory imageUrl, // Added image URL parameter
         uint entranceFee,
         uint pricePool,
         uint timer,
         Question[] memory questions,
         Reward[] memory rewards
-    ) public {
-        // Transfer Theta tokens as price pool
-        ERC20 theta = ERC20(thetaToken);
-        require(theta.transferFrom(msg.sender, address(this), pricePool), "Theta transfer failed");
+    ) public payable {
+        require(msg.value == pricePool, "Price pool must be paid in THETA");
 
         Quiz storage newQuiz = quizzes.push();
         newQuiz.title = title;
         newQuiz.description = description;
-        newQuiz.imageUrl = imageUrl;
+        newQuiz.imageUrl = imageUrl; // Set image URL
         newQuiz.entranceFee = entranceFee;
         newQuiz.pricePool = pricePool;
         newQuiz.timer = timer;
@@ -84,6 +76,10 @@ contract QuizPlatform {
         }
 
         emit QuizCreated(quizzes.length - 1, msg.sender, title, description, entranceFee, pricePool, timer);
+
+        // Transfer THETA from organizer to the contract
+        (bool success, ) = thetaToken.call{value: pricePool}("");
+        require(success, "THETA transfer failed");
     }
 
     function participateInQuiz(uint quizId) public payable {
@@ -96,8 +92,8 @@ contract QuizPlatform {
         emit ParticipantAdded(quizId, msg.sender);
 
         // Transfer TFUEL from participant to the contract
-        ERC20 tfuel = ERC20(tfuelToken);
-        require(tfuel.transferFrom(msg.sender, address(this), quiz.entranceFee), "TFUEL transfer failed");
+        (bool success, ) = tfuelToken.call{value: quiz.entranceFee}("");
+        require(success, "TFUEL transfer failed");
     }
 
     function submitAnswers(uint quizId, uint[] memory answers) public {
@@ -141,7 +137,7 @@ contract QuizPlatform {
     function getQuiz(uint quizId) public view returns (
         string memory title,
         string memory description,
-        string memory imageUrl,
+        string memory imageUrl, // Added image URL in the return values
         uint entranceFee,
         uint pricePool,
         uint timer,
@@ -151,7 +147,7 @@ contract QuizPlatform {
         return (
             quiz.title,
             quiz.description,
-            quiz.imageUrl,
+            quiz.imageUrl, // Return image URL
             quiz.entranceFee,
             quiz.pricePool,
             quiz.timer,
