@@ -3,7 +3,7 @@ pragma solidity ^0.8.0;
 
 contract QuizPlatform {
     address public thetaToken = 0x1502B75f0eF25Fa1Fe5b79594da566047859645e;
-    address public tfuelToken = 0x1502B75f0eF25Fa1Fe5b79594da566047859645e; 
+    address public tfuelToken = 0x1502B75f0eF25Fa1Fe5b79594da566047859645e;
 
     struct Question {
         string questionText;
@@ -20,6 +20,7 @@ contract QuizPlatform {
     struct Quiz {
         string title;
         string description;
+        string imageUrl; // Image URL for the quiz thumbnail
         uint entranceFee;
         uint pricePool;
         uint timer;
@@ -39,6 +40,7 @@ contract QuizPlatform {
     function createQuiz(
         string memory title,
         string memory description,
+        string memory imageUrl, // Added image URL parameter
         uint entranceFee,
         uint pricePool,
         uint timer,
@@ -50,6 +52,7 @@ contract QuizPlatform {
         Quiz storage newQuiz = quizzes.push();
         newQuiz.title = title;
         newQuiz.description = description;
+        newQuiz.imageUrl = imageUrl; // Set image URL
         newQuiz.entranceFee = entranceFee;
         newQuiz.pricePool = pricePool;
         newQuiz.timer = timer;
@@ -134,6 +137,7 @@ contract QuizPlatform {
     function getQuiz(uint quizId) public view returns (
         string memory title,
         string memory description,
+        string memory imageUrl, // Added image URL in the return values
         uint entranceFee,
         uint pricePool,
         uint timer,
@@ -143,6 +147,7 @@ contract QuizPlatform {
         return (
             quiz.title,
             quiz.description,
+            quiz.imageUrl, // Return image URL
             quiz.entranceFee,
             quiz.pricePool,
             quiz.timer,
