@@ -3,7 +3,15 @@ import QuizForm from "./QuizForm";
 import Airesponse from "./Airesponse";
 import Chatbot from "./Chatbot";
 
-const AIquiz = () => {
+const AIquiz = ({
+  pricepool,
+  entranceFee,
+  timer,
+  quizTitle,
+  quizDescription,
+  rewards,
+  onSubmit,
+}) => {
   const aiResponseRef = useRef();
 
   const handleGenerateIncorrectOptions = async (question, correctAnswer) => {
@@ -17,8 +25,14 @@ const AIquiz = () => {
   return (
     <div>
       <QuizForm
-        onSubmit={(data) => console.log("Submitted Data:", data)}
+        onSubmit={onSubmit}
         generateIncorrectOptions={handleGenerateIncorrectOptions}
+        quizTitle={quizTitle}
+        pricepool={pricepool}
+        entranceFee={entranceFee}
+        timer={timer}
+        quizDescription={quizDescription}
+        rewards={rewards}
       />
       <div style={{ display: "none" }} className="aistuff">
         <Airesponse ref={aiResponseRef} />

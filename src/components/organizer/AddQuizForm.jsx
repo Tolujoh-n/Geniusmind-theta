@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import AIquiz from "./AIquiz";
+import axios from "axios";
 
 const styles = {
   container: {
@@ -64,30 +65,46 @@ const AddQuizForm = () => {
     ],
   });
 
-  // Function to handle changes in quiz description
+  // Save gameInfo to local storage whenever it changes
+  useEffect(() => {
+    localStorage.setItem("gameInfo", JSON.stringify(gameInfo));
+  }, [gameInfo]);
+
+  // Load gameInfo from local storage on mount
+  useEffect(() => {
+    const storedGameInfo = localStorage.getItem("gameInfo");
+    if (storedGameInfo) {
+      setGameInfo(JSON.parse(storedGameInfo));
+    }
+  }, []);
+
   const handleQuizDescriptionChange = (e) => {
     setGameInfo({ ...gameInfo, quizDescription: e.target.value });
   };
 
-  // Function to handle changes in quiz title
   const handleQuizTitleChange = (e) => {
     setGameInfo({ ...gameInfo, quizName: e.target.value });
   };
 
-  // Function to handle changes in rewards
   const handleRewardChange = (index, value) => {
     setGameInfo((prevState) => {
       const rewards = [...prevState.rewards];
       rewards[index].value = value;
-
       return { ...prevState, rewards };
     });
   };
 
-  const handleSubmit = (quizData) => {
+  const handleSubmit = async (quizData) => {
     console.log("Quiz Data Submitted:", quizData);
-    console.log("Quiz Information Submitted:", gameInfo);
-    // You can send quizData to the database here
+    try {
+      const response = await axios.post("YOUR_BACKEND_ENDPOINT_URL", {
+        ...quizData,
+        ...gameInfo,
+      });
+      console.log("Response from backend:", response.data);
+    } catch (error) {
+      console.error("Error submitting data to backend:", error);
+    }
   };
 
   return (
