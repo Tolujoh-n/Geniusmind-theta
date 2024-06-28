@@ -96,15 +96,6 @@ const AddQuizForm = () => {
 
   const handleSubmit = async (quizData) => {
     console.log("Quiz Data Submitted:", quizData);
-    try {
-      const response = await axios.post("YOUR_BACKEND_ENDPOINT_URL", {
-        ...quizData,
-        ...gameInfo,
-      });
-      console.log("Response from backend:", response.data);
-    } catch (error) {
-      console.error("Error submitting data to backend:", error);
-    }
   };
 
   return (
