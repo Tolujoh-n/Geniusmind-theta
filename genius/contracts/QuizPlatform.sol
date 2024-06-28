@@ -2,8 +2,6 @@
 pragma solidity ^0.8.0;
 
 contract QuizPlatform {
-    address public thetaToken = 0x1502B75f0eF25Fa1Fe5b79594da566047859645e;
-    address public tfuelToken = 0x1502B75f0eF25Fa1Fe5b79594da566047859645e;
 
     struct Question {
         string questionText;
@@ -20,7 +18,7 @@ contract QuizPlatform {
     struct Quiz {
         string title;
         string description;
-        string imageUrl; // Image URL for the quiz thumbnail
+        string imageUrl; 
         uint entranceFee;
         uint pricePool;
         uint timer;
@@ -76,10 +74,6 @@ contract QuizPlatform {
         }
 
         emit QuizCreated(quizzes.length - 1, msg.sender, title, description, entranceFee, pricePool, timer);
-
-        // Transfer THETA from organizer to the contract
-        (bool success, ) = thetaToken.call{value: pricePool}("");
-        require(success, "THETA transfer failed");
     }
 
     function participateInQuiz(uint quizId) public payable {
@@ -90,10 +84,6 @@ contract QuizPlatform {
 
         quizParticipants[quizId][msg.sender] = true;
         emit ParticipantAdded(quizId, msg.sender);
-
-        // Transfer TFUEL from participant to the contract
-        (bool success, ) = tfuelToken.call{value: quiz.entranceFee}("");
-        require(success, "TFUEL transfer failed");
     }
 
     function submitAnswers(uint quizId, uint[] memory answers) public {
@@ -137,7 +127,7 @@ contract QuizPlatform {
     function getQuiz(uint quizId) public view returns (
         string memory title,
         string memory description,
-        string memory imageUrl, // Added image URL in the return values
+        string memory imageUrl,
         uint entranceFee,
         uint pricePool,
         uint timer,
@@ -147,7 +137,7 @@ contract QuizPlatform {
         return (
             quiz.title,
             quiz.description,
-            quiz.imageUrl, // Return image URL
+            quiz.imageUrl, 
             quiz.entranceFee,
             quiz.pricePool,
             quiz.timer,
