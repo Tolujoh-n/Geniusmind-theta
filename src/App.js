@@ -10,7 +10,7 @@ import Footer from "./components/Footer";
 import QuizInfo from "./components/QuizInfo";
 import AIquiz from "./components/organizer/AIquiz";
 import Leaderboard from "./components/leaderboard/Leaderboard";
-import { Web3Provider } from "./Web3Context";
+import { Web3Provider } from "./Web3Provider";
 // Css files
 import "./assets/vendor/simple-datatables/style.css";
 import "./assets/vendor/remixicon/remixicon.css";

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import logo from "../../assets/address.jpg";
-import { useWeb3 } from "../../Web3Context";
+import { useWeb3 } from "../../Web3Provider";
 import { ethers } from "ethers";
 
 const Connectwallet = () => {

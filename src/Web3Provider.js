@@ -6,15 +6,23 @@ const Web3Context = createContext();
 export const Web3Provider = ({ children }) => {
   const [connected, setConnected] = useState(false);
   const [account, setAccount] = useState("");
+  const [provider, setProvider] = useState(null);
+  const [signer, setSigner] = useState(null);
 
   useEffect(() => {
     if (window.ethereum) {
+      const ethersProvider = new ethers.providers.Web3Provider(window.ethereum);
+      setProvider(ethersProvider);
+
       window.ethereum.on("accountsChanged", (accounts) => {
         if (accounts.length > 0) {
           setAccount(accounts[0]);
           setConnected(true);
+          setSigner(ethersProvider.getSigner());
         } else {
           setConnected(false);
+          setAccount("");
+          setSigner(null);
         }
       });
 
@@ -36,6 +44,7 @@ export const Web3Provider = ({ children }) => {
       });
       setAccount(accounts[0]);
       setConnected(true);
+      setSigner(provider.getSigner());
       await switchNetwork();
     } catch (error) {
       console.error("Failed to connect wallet:", error);
@@ -45,6 +54,7 @@ export const Web3Provider = ({ children }) => {
   const disconnectWallet = () => {
     setConnected(false);
     setAccount("");
+    setSigner(null);
   };
 
   const switchNetwork = async () => {
@@ -93,6 +103,8 @@ export const Web3Provider = ({ children }) => {
         connectWallet,
         disconnectWallet,
         shortenAddress,
+        provider,
+        signer,
       }}
     >
       {children}
