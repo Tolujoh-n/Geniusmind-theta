@@ -36,45 +36,45 @@ contract QuizPlatform {
     event QuizClosed(uint indexed quizId);
 
     function createQuiz(
-        string memory title,
-        string memory description,
-        string memory imageUrl, // Added image URL parameter
-        uint entranceFee,
-        uint pricePool,
-        uint timer,
-        Question[] memory questions,
-        Reward[] memory rewards
-    ) public payable {
-        require(msg.value == pricePool, "Price pool must be paid in THETA");
+    string memory title,
+    string memory description,
+    string memory imageUrl, // Added image URL parameter
+    uint entranceFee,
+    uint pricePool,
+    uint timer,
+    Question[] memory questions,
+    Reward[] memory rewards
+) public payable {
+    require(msg.value == pricePool, "Price pool must be paid in THETA");
 
-        Quiz storage newQuiz = quizzes.push();
-        newQuiz.title = title;
-        newQuiz.description = description;
-        newQuiz.imageUrl = imageUrl; // Set image URL
-        newQuiz.entranceFee = entranceFee;
-        newQuiz.pricePool = pricePool;
-        newQuiz.timer = timer;
-        newQuiz.organizer = msg.sender;
-        newQuiz.isActive = true;
+    Quiz storage newQuiz = quizzes.push();
+    newQuiz.title = title;
+    newQuiz.description = description;
+    newQuiz.imageUrl = imageUrl; // Set image URL
+    newQuiz.entranceFee = entranceFee;
+    newQuiz.pricePool = pricePool;
+    newQuiz.timer = timer;
+    newQuiz.organizer = msg.sender;
+    newQuiz.isActive = true;
 
-        for (uint i = 0; i < questions.length; i++) {
-            newQuiz.questions.push(Question({
-                questionText: questions[i].questionText,
-                questionImg: questions[i].questionImg,
-                options: questions[i].options,
-                correctOption: questions[i].correctOption
-            }));
-        }
-
-        for (uint j = 0; j < rewards.length; j++) {
-            newQuiz.rewards.push(Reward({
-                label: rewards[j].label,
-                value: rewards[j].value
-            }));
-        }
-
-        emit QuizCreated(quizzes.length - 1, msg.sender, title, description, entranceFee, pricePool, timer);
+    for (uint i = 0; i < questions.length; i++) {
+        newQuiz.questions.push(Question({
+            questionText: questions[i].questionText,
+            questionImg: questions[i].questionImg,
+            options: questions[i].options,
+            correctOption: questions[i].correctOption
+        }));
     }
+
+    for (uint j = 0; j < rewards.length; j++) {
+        newQuiz.rewards.push(Reward({
+            label: rewards[j].label,
+            value: rewards[j].value
+        }));
+    }
+
+    emit QuizCreated(quizzes.length - 1, msg.sender, title, description, entranceFee, pricePool, timer);
+}
 
     function participateInQuiz(uint quizId) public payable {
         Quiz storage quiz = quizzes[quizId];

@@ -63,6 +63,7 @@ const AddQuizForm = () => {
       { label: "70% - 79%", value: 0 },
       { label: "80% - 100%", value: 0 },
     ],
+    quiz: [], // Initialize quiz as an empty array
   });
 
   const { connected, connectWallet, account, provider, signer } = useWeb3();
@@ -94,45 +95,61 @@ const AddQuizForm = () => {
       return { ...prevState, rewards };
     });
   };
-
-  const handleSubmit = async (quizData) => {
-    console.log("Quiz Data Submitted:", quizData);
+  const handleSubmit = async () => {
     if (!connected) {
       await connectWallet();
       return;
     }
-
+  
     if (!provider || !signer) {
       console.error("Ethers provider or signer is not initialized.");
       return;
     }
-
+  
     const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
-
+  
     try {
+      // Prepare quiz data
+      const quizData = {
+        quizTitle: gameInfo.quizName,
+        quizDescription: gameInfo.quizDescription,
+        pricepool: gameInfo.pricepool,
+        entranceFee: gameInfo.entranceFee,
+        timer: gameInfo.timer,
+        quiz: gameInfo.quiz.map((q) => ({
+          questionText: q.question,
+          questionImg: q.questionimg,
+          options: q.options,
+          correctOption: q.correctOption,
+        })),
+        rewards: gameInfo.rewards.map((reward) => ({
+          label: reward.label,
+          value: ethers.utils.parseUnits(reward.value.toString(), 18),
+        })),
+      };
+  
+      // Example usage of the first question's image URL
       const transaction = await contract.createQuiz(
         quizData.quizTitle,
         quizData.quizDescription,
-        quizData.quizImage, // Pass the image URL here
+        quizData.quiz.length > 0 ? quizData.quiz[0].questionImg : "", // Ensure to handle case with empty quiz array
         ethers.utils.parseUnits(quizData.entranceFee.toString(), 18),
         ethers.utils.parseUnits(quizData.pricepool.toString(), 18),
         quizData.timer,
         quizData.quiz,
-        quizData.rewards.map((reward) => ({
-          label: reward.label,
-          value: ethers.utils.parseUnits(reward.value.toString(), 18),
-        })),
+        quizData.rewards,
         {
           value: ethers.utils.parseUnits(quizData.pricepool.toString(), 18),
         }
       );
-
+  
       console.log("Transaction successful:", transaction);
       navigate("/");
     } catch (error) {
       console.error("Transaction failed:", error);
     }
   };
+  
 
   return (
     <div style={styles.container}>
