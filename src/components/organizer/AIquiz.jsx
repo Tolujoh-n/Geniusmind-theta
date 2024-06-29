@@ -1,7 +1,6 @@
 import React, { useRef } from "react";
 import QuizForm from "./QuizForm";
 import Airesponse from "./Airesponse";
-import Chatbot from "./Chatbot";
 
 const AIquiz = ({
   pricepool,

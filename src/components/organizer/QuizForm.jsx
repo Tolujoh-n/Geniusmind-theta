@@ -133,16 +133,6 @@ const QuizForm = ({
   };
 
   const handleSubmit = () => {
-    // console.log("Quiz Submitted:", {
-    //   quizTitle,
-    //   pricepool,
-    //   entranceFee,
-    //   timer,
-    //   quiz,
-    //   quizDescription,
-    //   rewards,
-    // });
-
     onSubmit({
       quizTitle,
       pricepool,

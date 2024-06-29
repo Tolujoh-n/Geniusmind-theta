@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
 import AIquiz from "./AIquiz";
-import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { useWeb3 } from "../../Web3Provider";
+import { ABI, CONTRACT_ADDRESS } from "./Constants";
+import { ethers } from "ethers";
 
 const styles = {
   container: {
@@ -11,9 +14,6 @@ const styles = {
   },
   formContainer: {
     marginTop: "20px",
-  },
-  questContainer: {
-    marginBottom: "20px",
   },
   label: {
     display: "block",
@@ -54,23 +54,25 @@ const AddQuizForm = () => {
   const [gameInfo, setGameInfo] = useState({
     quizImage: "",
     quizName: "",
-    quizDescription: "", // Updated state
+    quizDescription: "",
     pricepool: 0,
-    entranceFee: 0, // Corrected key name
-    timer: 0, // Corrected key name
+    entranceFee: 0,
+    timer: 0,
     rewards: [
       { label: "60% - 69%", value: 0 },
       { label: "70% - 79%", value: 0 },
       { label: "80% - 100%", value: 0 },
     ],
+    quiz: [], // Initialize quiz as an empty array
   });
 
-  // Save gameInfo to local storage whenever it changes
+  const { connected, connectWallet, account, provider, signer } = useWeb3();
+  const navigate = useNavigate();
+
   useEffect(() => {
     localStorage.setItem("gameInfo", JSON.stringify(gameInfo));
   }, [gameInfo]);
 
-  // Load gameInfo from local storage on mount
   useEffect(() => {
     const storedGameInfo = localStorage.getItem("gameInfo");
     if (storedGameInfo) {
@@ -93,19 +95,61 @@ const AddQuizForm = () => {
       return { ...prevState, rewards };
     });
   };
-
-  const handleSubmit = async (quizData) => {
-    console.log("Quiz Data Submitted:", quizData);
+  const handleSubmit = async () => {
+    if (!connected) {
+      await connectWallet();
+      return;
+    }
+  
+    if (!provider || !signer) {
+      console.error("Ethers provider or signer is not initialized.");
+      return;
+    }
+  
+    const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
+  
     try {
-      const response = await axios.post("YOUR_BACKEND_ENDPOINT_URL", {
-        ...quizData,
-        ...gameInfo,
-      });
-      console.log("Response from backend:", response.data);
+      // Prepare quiz data
+      const quizData = {
+        quizTitle: gameInfo.quizName,
+        quizDescription: gameInfo.quizDescription,
+        pricepool: gameInfo.pricepool,
+        entranceFee: gameInfo.entranceFee,
+        timer: gameInfo.timer,
+        quiz: gameInfo.quiz.map((q) => ({
+          questionText: q.question,
+          questionImg: q.questionimg,
+          options: q.options,
+          correctOption: q.correctOption,
+        })),
+        rewards: gameInfo.rewards.map((reward) => ({
+          label: reward.label,
+          value: ethers.utils.parseUnits(reward.value.toString(), 18),
+        })),
+      };
+  
+      // Example usage of the first question's image URL
+      const transaction = await contract.createQuiz(
+        quizData.quizTitle,
+        quizData.quizDescription,
+        quizData.quiz.length > 0 ? quizData.quiz[0].questionImg : "", // Ensure to handle case with empty quiz array
+        ethers.utils.parseUnits(quizData.entranceFee.toString(), 18),
+        ethers.utils.parseUnits(quizData.pricepool.toString(), 18),
+        quizData.timer,
+        quizData.quiz,
+        quizData.rewards,
+        {
+          value: ethers.utils.parseUnits(quizData.pricepool.toString(), 18),
+        }
+      );
+  
+      console.log("Transaction successful:", transaction);
+      navigate("/");
     } catch (error) {
-      console.error("Error submitting data to backend:", error);
+      console.error("Transaction failed:", error);
     }
   };
+  
 
   return (
     <div style={styles.container}>
@@ -166,82 +210,84 @@ const AddQuizForm = () => {
             />
           </div>
           <div className="form-group">
-            <label htmlFor="productQuantity">Entrance Fee:</label>
+            <label style={styles.label}>Entrance Fee:</label>
             <input
               type="number"
               className="form-control"
-              placeholder="Participants Entrance Fee"
-              value={gameInfo.entranceFee} // Corrected key name
+              placeholder="Entrance Fee (THETA)"
+              value={gameInfo.entranceFee}
               onChange={(e) =>
                 setGameInfo({
                   ...gameInfo,
-                  entranceFee: parseInt(e.target.value), // Corrected key name
+                  entranceFee: parseInt(e.target.value),
                 })
               }
+              style={styles.input}
               required
             />
           </div>
           <div className="form-group">
-            <label htmlFor="productQuantity">Timer(minutes):</label>
+            <label style={styles.label}>Timer:</label>
             <input
               type="number"
               className="form-control"
-              placeholder="Set minutes for quiz"
-              value={gameInfo.timer} // Corrected key name
+              placeholder="Enter Time (seconds)"
+              value={gameInfo.timer}
               onChange={(e) =>
                 setGameInfo({
                   ...gameInfo,
-                  timer: parseInt(e.target.value), // Corrected key name
+                  timer: parseInt(e.target.value),
                 })
               }
+              style={styles.input}
               required
-            />
-          </div>
-        </div>
-
-        <div className="col-md-12">
-          <div className="form-group">
-            <label htmlFor="rewards">Winners Rewards</label>
-            <table style={styles.table}>
-              <tbody>
-                {gameInfo.rewards.map((reward, index) => (
-                  <tr key={index} style={styles.tableRow}>
-                    <td>{reward.label}</td>
-                    <td>
-                      <input
-                        type="number"
-                        value={reward.value}
-                        onChange={(e) =>
-                          handleRewardChange(index, parseInt(e.target.value))
-                        }
-                        style={styles.input}
-                      />
-                    </td>
-                  </tr>
-                ))}
-                {/* <tr>
-                  <td>Price Pool:</td>
-                  <td>{gameInfo.pricepool}</td>
-                </tr> */}
-              </tbody>
-            </table>
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="description">Quiz Description</label>
-            <textarea
-              type="text"
-              className="form-control"
-              id="description"
-              placeholder="Enter Quiz Description"
-              value={gameInfo.quizDescription}
-              onChange={handleQuizDescriptionChange}
             />
           </div>
         </div>
       </div>
+      <div style={styles.formContainer}>
+        <div className="container">
+          <div className="row justify-content-md-center">
+            <div className="col-md-12">
+              <label style={styles.label}>Quiz Description:</label>
+              <textarea
+                className="form-control"
+                placeholder="Enter Description"
+                value={gameInfo.quizDescription}
+                onChange={handleQuizDescriptionChange}
+                rows="3"
+                style={styles.textarea}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
 
-      {/* Render the QuizForm component */}
+      <div className="col-md-12">
+        <div className="form-group">
+          <label htmlFor="rewards">Winners Rewards</label>
+          <table style={styles.table}>
+            <tbody>
+              {gameInfo.rewards.map((reward, index) => (
+                <tr key={index} style={styles.tableRow}>
+                  <td>{reward.label}</td>
+                  <td>
+                    <input
+                      type="number"
+                      value={reward.value}
+                      onChange={(e) =>
+                        handleRewardChange(index, parseInt(e.target.value))
+                      }
+                      style={styles.input}
+                    />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
       {gameInfo.pricepool > 0 && (
         <>
           <AIquiz

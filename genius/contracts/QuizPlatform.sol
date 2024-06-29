@@ -2,8 +2,6 @@
 pragma solidity ^0.8.0;
 
 contract QuizPlatform {
-    address public thetaToken = 0x1502B75f0eF25Fa1Fe5b79594da566047859645e;
-    address public tfuelToken = 0x1502B75f0eF25Fa1Fe5b79594da566047859645e; 
 
     struct Question {
         string questionText;
@@ -20,6 +18,7 @@ contract QuizPlatform {
     struct Quiz {
         string title;
         string description;
+        string imageUrl; 
         uint entranceFee;
         uint pricePool;
         uint timer;
@@ -37,47 +36,45 @@ contract QuizPlatform {
     event QuizClosed(uint indexed quizId);
 
     function createQuiz(
-        string memory title,
-        string memory description,
-        uint entranceFee,
-        uint pricePool,
-        uint timer,
-        Question[] memory questions,
-        Reward[] memory rewards
-    ) public payable {
-        require(msg.value == pricePool, "Price pool must be paid in THETA");
+    string memory title,
+    string memory description,
+    string memory imageUrl, // Added image URL parameter
+    uint entranceFee,
+    uint pricePool,
+    uint timer,
+    Question[] memory questions,
+    Reward[] memory rewards
+) public payable {
+    require(msg.value == pricePool, "Price pool must be paid in THETA");
 
-        Quiz storage newQuiz = quizzes.push();
-        newQuiz.title = title;
-        newQuiz.description = description;
-        newQuiz.entranceFee = entranceFee;
-        newQuiz.pricePool = pricePool;
-        newQuiz.timer = timer;
-        newQuiz.organizer = msg.sender;
-        newQuiz.isActive = true;
+    Quiz storage newQuiz = quizzes.push();
+    newQuiz.title = title;
+    newQuiz.description = description;
+    newQuiz.imageUrl = imageUrl; // Set image URL
+    newQuiz.entranceFee = entranceFee;
+    newQuiz.pricePool = pricePool;
+    newQuiz.timer = timer;
+    newQuiz.organizer = msg.sender;
+    newQuiz.isActive = true;
 
-        for (uint i = 0; i < questions.length; i++) {
-            newQuiz.questions.push(Question({
-                questionText: questions[i].questionText,
-                questionImg: questions[i].questionImg,
-                options: questions[i].options,
-                correctOption: questions[i].correctOption
-            }));
-        }
-
-        for (uint j = 0; j < rewards.length; j++) {
-            newQuiz.rewards.push(Reward({
-                label: rewards[j].label,
-                value: rewards[j].value
-            }));
-        }
-
-        emit QuizCreated(quizzes.length - 1, msg.sender, title, description, entranceFee, pricePool, timer);
-
-        // Transfer THETA from organizer to the contract
-        (bool success, ) = thetaToken.call{value: pricePool}("");
-        require(success, "THETA transfer failed");
+    for (uint i = 0; i < questions.length; i++) {
+        newQuiz.questions.push(Question({
+            questionText: questions[i].questionText,
+            questionImg: questions[i].questionImg,
+            options: questions[i].options,
+            correctOption: questions[i].correctOption
+        }));
     }
+
+    for (uint j = 0; j < rewards.length; j++) {
+        newQuiz.rewards.push(Reward({
+            label: rewards[j].label,
+            value: rewards[j].value
+        }));
+    }
+
+    emit QuizCreated(quizzes.length - 1, msg.sender, title, description, entranceFee, pricePool, timer);
+}
 
     function participateInQuiz(uint quizId) public payable {
         Quiz storage quiz = quizzes[quizId];
@@ -87,10 +84,6 @@ contract QuizPlatform {
 
         quizParticipants[quizId][msg.sender] = true;
         emit ParticipantAdded(quizId, msg.sender);
-
-        // Transfer TFUEL from participant to the contract
-        (bool success, ) = tfuelToken.call{value: quiz.entranceFee}("");
-        require(success, "TFUEL transfer failed");
     }
 
     function submitAnswers(uint quizId, uint[] memory answers) public {
@@ -134,6 +127,7 @@ contract QuizPlatform {
     function getQuiz(uint quizId) public view returns (
         string memory title,
         string memory description,
+        string memory imageUrl,
         uint entranceFee,
         uint pricePool,
         uint timer,
@@ -143,6 +137,7 @@ contract QuizPlatform {
         return (
             quiz.title,
             quiz.description,
+            quiz.imageUrl, 
             quiz.entranceFee,
             quiz.pricePool,
             quiz.timer,
