@@ -72,14 +72,14 @@ export const Web3Provider = ({ children }) => {
             params: [
               {
                 chainId,
-                chainName: "Theta Mainnet",
-                rpcUrls: ["https://eth-rpc-api.thetatoken.org/rpc"],
+                chainName: "Theta Testnet",
+                rpcUrls: ["https://eth-rpc-api-testnet.thetatoken.org/rpc"],
                 nativeCurrency: {
                   name: "TFUEL",
                   symbol: "TFUEL",
                   decimals: 18,
                 },
-                blockExplorerUrls: ["https://explorer.thetatoken.org/"],
+                blockExplorerUrls: ["https://testnet-explorer.thetatoken.org/"],
               },
             ],
           });
