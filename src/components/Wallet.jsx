@@ -24,7 +24,7 @@ const Wallet = () => {
           <div className="col-xxl-4 col-md-6">
             <div className="card info-card revenue-card">
               <div className="card-body">
-                <h5 className="card-title">XP</h5>
+                <h5 className="card-title">Theta</h5>
 
                 <div className="d-flex align-items-center">
                   <div className="card-icon rounded-circle d-flex align-items-center justify-content-center">
@@ -32,7 +32,7 @@ const Wallet = () => {
                     <img id="balance" src={xp} alt="" />
                   </div>
                   <div className="ps-3">
-                    <h6>0 XP</h6>
+                    <h6>0 THETA</h6>
                   </div>
                 </div>
               </div>
@@ -41,7 +41,7 @@ const Wallet = () => {
           <div className="col-xxl-4 col-md-6">
             <div className="card info-card revenue-card">
               <div className="card-body">
-                <h5 className="card-title">Light Link</h5>
+                <h5 className="card-title">Tfuel</h5>
 
                 <div className="d-flex align-items-center">
                   <div className="card-icon rounded-circle d-flex align-items-center justify-content-center">
@@ -49,7 +49,7 @@ const Wallet = () => {
                     <img id="balance" src={ll} alt="" />
                   </div>
                   <div className="ps-3">
-                    <h6>0 LL</h6>
+                    <h6>0 TFUEL</h6>
                   </div>
                 </div>
               </div>
