@@ -46,7 +46,7 @@ const App = () => {
                   <Route path="/Profile" element={<Settings />} />
                   <Route path="/settings" element={<Settings />} />
                   <Route path="/genius" element={<Genius />} />
-                  <Route path="/quizInfo" element={<QuizInfo />} />
+                  <Route path="/quizInfo/:quizId" element={<QuizInfo />} />
                   <Route path="/leaderboard" element={<Leaderboard />} />
                 </Routes>
               </div>

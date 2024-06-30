@@ -1,22 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import useimage from "../assets/address.jpg";
 import Modal from "./Modal";
 import { Link } from "react-router-dom";
-
-const Topquiz = [
-  {
-    name: "Meta Quest Presence Platform quiz 2024",
-    reward: "10",
-    level: "1",
-    id: 1,
-  },
-  {
-    name: "Meta Quest Presence Platform quiz 2024",
-    reward: "15",
-    level: "2",
-    id: 2,
-  },
-];
+import { useWeb3 } from "../Web3Provider";
+import { ABI, CONTRACT_ADDRESS } from "./Constants";
+import { ethers } from "ethers";
 
 const cardData = [
   { name: "Jane col", reward: "10", level: "1", id: 1 },
@@ -28,7 +16,9 @@ const cardData = [
 ];
 
 const Genius = () => {
+  const { connected, connectWallet, account, provider, signer } = useWeb3();
   const [isGamemodalOpen, setIsGamemodalOpen] = useState(false);
+  const [quizzes, setQuizzes] = useState([]);
 
   const handleGamemodalClick = () => {
     setIsGamemodalOpen(true);
@@ -37,11 +27,45 @@ const Genius = () => {
   const handleCloseGamemodal = () => {
     setIsGamemodalOpen(false);
   };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     // claim
     handleCloseGamemodal();
   };
+
+  useEffect(() => {
+    const fetchQuizzes = async () => {
+      if (!provider) return;
+
+      const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, provider);
+
+      try {
+        const count = await contract.getQuizzesCount();
+        const quizzesArray = [];
+
+        for (let i = 0; i < count; i++) {
+          const quiz = await contract.getQuiz(i);
+          quizzesArray.push({
+            id: i,
+            title: quiz.title,
+            description: quiz.description,
+            imageUrl: quiz.imageUrl,
+            entranceFee: ethers.utils.formatEther(quiz.entranceFee),
+            pricePool: ethers.utils.formatEther(quiz.pricePool),
+            timer: quiz.timer.toNumber(),
+            isActive: quiz.isActive,
+          });
+        }
+
+        setQuizzes(quizzesArray);
+      } catch (error) {
+        console.error("Failed to fetch quizzes:", error);
+      }
+    };
+
+    fetchQuizzes();
+  }, [provider]);
 
   return (
     <>
@@ -49,13 +73,13 @@ const Genius = () => {
         <h5 className="card-title">Top Quiz</h5>
 
         <div className="row">
-          {Topquiz.map((card) => (
-            <div key={card.id} className="col-lg-12">
+          {quizzes.map((quiz) => (
+            <div key={quiz.id} className="col-lg-12">
               <div
                 style={{ background: "#213743" }}
                 className="card info-card revenue-card"
               >
-                <Link to="/quizInfo">
+                <Link to={`/quizInfo/${quiz.id}`}>
                   <div className="card-body">
                     <div className="d-flex align-items-center">
                       <div className="">
@@ -71,31 +95,30 @@ const Genius = () => {
                       </div>
                       <div className="ps-3">
                         <h4>
-                          <a href="#">{card.name}</a>
+                          <a href="#">{quiz.title}</a>
                         </h4>
                         <div className="d-flex justify-content-between align-items-center">
                           <div>
-                            {/* First tag with icon */}
                             <span className="badge bg-warning">upcoming</span>
                           </div>
                           <div className="d-flex align-items-center">
-                            {/* Second tag with icon */}
                             <i className="bi bi-globe"> </i>{" "}
                             <span className="badge me-2">Public</span>
                           </div>
                         </div>
                         <br />
+
                         <div className="d-flex justify-content-between align-items-center">
-                          {/* First word with icon */}
                           <div>
-                            <span style={{ color: "#b1bad3" }}>
-                              3000 STX in prizes
+                            <span
+                              style={{ color: "#b1bad3", marginRight: "2rem" }}
+                            >
+                              POOL: {quiz.pricePool} THETA
                             </span>
                           </div>
-                          {/* Second word */}
                           <div>
                             <span style={{ color: "#b1bad3" }}>
-                              300 participants
+                              {quiz.participants} participants
                             </span>
                           </div>
                         </div>
@@ -145,14 +168,12 @@ const Genius = () => {
 
                       <p>
                         <div className="d-flex justify-content-between align-items-center">
-                          {/* First word with icon */}
                           <div>
                             <span style={{ color: "#b1bad3" }}>
                               {" "}
                               Quiz Won: {card.level}
                             </span>
                           </div>
-                          {/* Second word */}
                           <div>
                             <button id="followbtn">Follow</button>
                           </div>
@@ -203,14 +224,12 @@ const Genius = () => {
 
                       <p>
                         <div className="d-flex justify-content-between align-items-center">
-                          {/* First word with icon */}
                           <div>
                             <span style={{ color: "#b1bad3" }}>
                               {" "}
                               Quiz Hosted: {card.level}
                             </span>
                           </div>
-                          {/* Second word */}
                           <div>
                             <button id="followbtn">Follow</button>
                           </div>
@@ -225,7 +244,6 @@ const Genius = () => {
         </div>
       </div>
       <>
-        {/* Render the Gamemodal if isGamemodalOpen is true */}
         {isGamemodalOpen && (
           <Modal onClose={handleCloseGamemodal} onSubmit={handleSubmit} />
         )}

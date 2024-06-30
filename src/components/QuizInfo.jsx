@@ -1,7 +1,10 @@
-import React, { useState } from "react";
-import xp from "../assets/img/xp.jpg";
+import React, { useState, useEffect } from "react";
 import useimage from "../assets/address.jpg";
 import Modal from "./Modal";
+import { useWeb3 } from "../Web3Provider";
+import { ABI, CONTRACT_ADDRESS } from "./Constants";
+import { useParams } from "react-router-dom";
+import { ethers } from "ethers";
 import { BsCheckCircle } from "react-icons/bs";
 import Quiztheory from "./Quiztheory";
 import Paticipants from "./Paticipants";
@@ -28,20 +31,67 @@ const cardData = [
 ];
 
 const QuizInfo = () => {
+  const { provider, signer } = useWeb3();
+  const { quizId } = useParams();
   const [isGamemodalOpen, setIsGamemodalOpen] = useState(false);
+  const [quiz, setQuiz] = useState(null);
 
-  const handleGamemodalClick = () => {
-    setIsGamemodalOpen(true);
+  useEffect(() => {
+    const fetchQuiz = async () => {
+      try {
+        const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
+        const quizData = await contract.getQuiz(quizId);
+
+        if (quizData) {
+          setQuiz({
+            id: quizId,
+            title: quizData.title || "",
+            pricePool: ethers.utils.formatEther(quizData.pricePool || "0"),
+            participants: quizData.participants
+              ? quizData.participants.toString()
+              : "0",
+            entranceFee: ethers.utils.formatEther(quizData.entranceFee || "0"),
+          });
+        }
+      } catch (error) {
+        console.error("Error fetching quiz data:", error);
+      }
+    };
+
+    if (signer) {
+      fetchQuiz();
+    }
+  }, [signer, quizId]);
+
+  const handleGamemodalClick = async () => {
+    const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
+    const entranceFee = ethers.utils.parseEther(quiz.entranceFee);
+
+    try {
+      const tx = await contract.participateInQuiz(quizId, {
+        value: entranceFee,
+      });
+      await tx.wait();
+      setIsGamemodalOpen(true); // Open the modal immediately after transaction confirmation
+    } catch (error) {
+      console.error("Error participating in quiz:", error);
+    }
   };
 
   const handleCloseGamemodal = () => {
     setIsGamemodalOpen(false);
   };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     // claim
     handleCloseGamemodal();
   };
+
+  if (!quiz) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <>
       <div className="col-lg-12">
@@ -57,15 +107,13 @@ const QuizInfo = () => {
               >
                 <div style={{ width: "50%" }} className="ps-3 flex-grow-1">
                   <h4>
-                    <a href="#">Meta Quest Presence Platform quiz 2024</a>
+                    <a href="#">{quiz.title}</a>
                   </h4>
                   <div className="d-flex justify-content-between align-items-center">
                     <div>
-                      {/* First tag with icon */}
                       <span className="badge bg-warning">upcoming</span>
                     </div>
                     <div className="d-flex align-items-center">
-                      {/* Second tag with icon */}
                       <i className="bi bi-globe"> </i>{" "}
                       <span className="badge me-2">Public</span>
                       <span style={{ color: "#b1bad3" }}>12 April 2024</span>
@@ -73,15 +121,19 @@ const QuizInfo = () => {
                   </div>
                   <br />
                   <div className="d-flex justify-content-between align-items-center">
-                    {/* First word with icon */}
                     <div>
-                      <span style={{ color: "#b1bad3" }}>Fee: 5 STX</span>
+                      <span style={{ color: "#b1bad3" }}>
+                        Fee: {quiz.entranceFee} TFUEL
+                      </span>
                     </div>
-                    {/* Second word */}
                     <div>
-                      <span style={{ color: "#b1bad3" }}>300 participants</span>
+                      <span style={{ color: "#b1bad3" }}>
+                        {quiz.participants} participants
+                      </span>
                       <br />
-                      <span style={{ color: "#b1bad3" }}>Pool: 2500 STX</span>
+                      <span style={{ color: "#b1bad3" }}>
+                        Pool: {quiz.pricePool} THETA
+                      </span>
                     </div>
                   </div>
 
