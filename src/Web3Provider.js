@@ -29,6 +29,20 @@ export const Web3Provider = ({ children }) => {
       window.ethereum.on("chainChanged", () => {
         window.location.reload();
       });
+
+      // Fetch initial accounts
+      window.ethereum
+        .request({ method: "eth_accounts" })
+        .then((accounts) => {
+          if (accounts.length > 0) {
+            setAccount(accounts[0]);
+            setConnected(true);
+            setSigner(ethersProvider.getSigner());
+          }
+        })
+        .catch((error) => {
+          console.error("Failed to get accounts:", error);
+        });
     }
   }, []);
 
@@ -45,7 +59,7 @@ export const Web3Provider = ({ children }) => {
       setAccount(accounts[0]);
       setConnected(true);
       setSigner(provider.getSigner());
-      await switchNetwork();
+      await switchNetwork(); // Ensure the network is switched after connecting wallet
     } catch (error) {
       console.error("Failed to connect wallet:", error);
     }
@@ -58,7 +72,7 @@ export const Web3Provider = ({ children }) => {
   };
 
   const switchNetwork = async () => {
-    const chainId = "0x169"; // 361 in hexadecimal
+    const chainId = "0x169"; // 361 in hexadecimal for Theta Testnet
     try {
       await window.ethereum.request({
         method: "wallet_switchEthereumChain",
@@ -66,6 +80,7 @@ export const Web3Provider = ({ children }) => {
       });
     } catch (switchError) {
       if (switchError.code === 4902) {
+        // Chain not added
         try {
           await window.ethereum.request({
             method: "wallet_addEthereumChain",
@@ -86,6 +101,8 @@ export const Web3Provider = ({ children }) => {
         } catch (addError) {
           console.error("Failed to add network:", addError);
         }
+      } else {
+        console.error("Failed to switch network:", switchError);
       }
     }
   };
