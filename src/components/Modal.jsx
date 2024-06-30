@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 
 const Modal = ({ onClose }) => {
-  const [timeLeft, setTimeLeft] = useState(600); // For testing, changed time to 10 seconds
+  const [timeLeft, setTimeLeft] = useState(600); //timer
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState({});
   const [showMessage, setShowMessage] = useState(false);

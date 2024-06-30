@@ -21,17 +21,29 @@ const Sidebar = () => {
 
   useEffect(() => {
     const fetchBalances = async () => {
-      if (window.ethereum && window.ethereum.selectedAddress) {
+      if (window.ethereum) {
         const provider = new ethers.providers.Web3Provider(window.ethereum);
-        const address = window.ethereum.selectedAddress;
 
-        // Fetch THETA balance
-        const thetaBalance = await provider.getBalance(address);
-        setThetaBalance(ethers.utils.formatEther(thetaBalance));
+        try {
+          const accounts = await window.ethereum.request({
+            method: "eth_accounts",
+          });
+          if (accounts.length > 0) {
+            const address = accounts[0];
 
-        // Fetch TFUEL balance (Using TFUEL endpoint)
-        const tfuelBalance = await provider.getBalance(address, "latest");
-        setTfuelBalance(ethers.utils.formatEther(tfuelBalance));
+            // Fetch THETA balance
+            const thetaBalance = await provider.getBalance(address);
+            setThetaBalance(ethers.utils.formatEther(thetaBalance));
+
+            // Fetch TFUEL balance (Using TFUEL endpoint)
+            const tfuelBalance = await provider.getBalance(address, "latest");
+            setTfuelBalance(ethers.utils.formatEther(tfuelBalance));
+          } else {
+            console.error("No accounts found");
+          }
+        } catch (error) {
+          console.error("Failed to get accounts:", error);
+        }
       }
     };
 

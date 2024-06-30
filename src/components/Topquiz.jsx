@@ -9,30 +9,40 @@ const cardData = [
     reward: "10",
     level: "1",
     id: 1,
+    pool: 3000,
+    perticipants: 20,
   },
   {
     name: "Meta Quest Presence Platform quiz 2024",
     reward: "15",
     level: "2",
     id: 2,
+    pool: 3000,
+    perticipants: 20,
   },
   {
     name: "Meta Quest Presence Platform quiz 2024",
     reward: "20",
     level: "3",
     id: 3,
+    pool: 3000,
+    perticipants: 20,
   },
   {
     name: "Meta Quest Presence Platform quiz 2024",
     reward: "25",
     level: "4",
     id: 4,
+    pool: 3000,
+    perticipants: 20,
   },
   {
     name: "Meta Quest Presence Platform quiz 2024",
     reward: "30",
     level: "5",
     id: 5,
+    pool: 3000,
+    perticipants: 20,
   },
 ];
 
@@ -89,13 +99,13 @@ const Topquiz = () => {
                               {/* First word with icon */}
                               <div>
                                 <span style={{ color: "#b1bad3" }}>
-                                  POOL: 3000 STX
+                                  POOL: {card.pool} THETA
                                 </span>
                               </div>
                               {/* Second word */}
                               <div>
                                 <span style={{ color: "#b1bad3" }}>
-                                  300 participants
+                                  {card.perticipants} participants
                                 </span>
                               </div>
                             </div>

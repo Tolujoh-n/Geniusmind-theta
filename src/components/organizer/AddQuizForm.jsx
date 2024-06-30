@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import AIquiz from "./AIquiz";
 import { useNavigate } from "react-router-dom";
 import { useWeb3 } from "../../Web3Provider";
-import { ABI, CONTRACT_ADDRESS } from "./Constants";
+import { ABI, CONTRACT_ADDRESS } from "../Constants";
 import { ethers } from "ethers";
 
 const styles = {
@@ -100,14 +100,14 @@ const AddQuizForm = () => {
       await connectWallet();
       return;
     }
-  
+
     if (!provider || !signer) {
       console.error("Ethers provider or signer is not initialized.");
       return;
     }
-  
+
     const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
-  
+
     try {
       // Prepare quiz data
       const quizData = {
@@ -127,7 +127,7 @@ const AddQuizForm = () => {
           value: ethers.utils.parseUnits(reward.value.toString(), 18),
         })),
       };
-  
+
       // Example usage of the first question's image URL
       const transaction = await contract.createQuiz(
         quizData.quizTitle,
@@ -142,14 +142,13 @@ const AddQuizForm = () => {
           value: ethers.utils.parseUnits(quizData.pricepool.toString(), 18),
         }
       );
-  
+
       console.log("Transaction successful:", transaction);
       navigate("/");
     } catch (error) {
       console.error("Transaction failed:", error);
     }
   };
-  
 
   return (
     <div style={styles.container}>
