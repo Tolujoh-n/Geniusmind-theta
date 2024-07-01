@@ -172,7 +172,7 @@ const AddQuizForm = () => {
             <input
               type="number"
               className="form-control"
-              placeholder="Price Pool (THETA)"
+              placeholder="Price Pool (TFUEL)"
               value={gameInfo.pricepool}
               onChange={(e) =>
                 setGameInfo({
@@ -213,7 +213,7 @@ const AddQuizForm = () => {
             <input
               type="number"
               className="form-control"
-              placeholder="Entrance Fee (THETA)"
+              placeholder="Entrance Fee (TFUEL)"
               value={gameInfo.entranceFee}
               onChange={(e) =>
                 setGameInfo({

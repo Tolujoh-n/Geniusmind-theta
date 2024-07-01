@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { ethers } from "ethers";
-import { Link } from "react-router-dom";
+import { ABI, CONTRACT_ADDRESS } from "./Constants";
 import theta from "../assets/img/theta.jpg";
 import tfuel from "../assets/img/tfuel.jpg";
 import useimage from "../assets/address.jpg";
@@ -31,13 +31,18 @@ const Sidebar = () => {
           if (accounts.length > 0) {
             const address = accounts[0];
 
-            // Fetch THETA balance
-            const thetaBalance = await provider.getBalance(address);
-            setThetaBalance(ethers.utils.formatEther(thetaBalance));
-
-            // Fetch TFUEL balance (Using TFUEL endpoint)
-            const tfuelBalance = await provider.getBalance(address, "latest");
+            // Fetch TFUEL balance
+            const tfuelBalance = await provider.getBalance(address);
             setTfuelBalance(ethers.utils.formatEther(tfuelBalance));
+
+            // Fetch THETA balance using contract
+            const thetaContract = new ethers.Contract(
+              CONTRACT_ADDRESS,
+              ABI,
+              provider
+            );
+            const thetaBalance = await thetaContract.balanceOf(address);
+            setThetaBalance(ethers.utils.formatEther(thetaBalance));
           } else {
             console.error("No accounts found");
           }
@@ -73,7 +78,7 @@ const Sidebar = () => {
             <h5 className="card-title">Balance:</h5>
             <div className="d-flex align-items-center">
               <div className="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                <img id="balance" src={theta} alt="" />
+                <img id="balance" src={theta} alt="Theta Logo" />
               </div>
               <div className="ps-3">
                 <h6>{thetaBalance} THETA</h6>
@@ -82,7 +87,7 @@ const Sidebar = () => {
             <hr />
             <div className="d-flex align-items-center">
               <div className="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                <img id="balance" src={tfuel} alt="" />
+                <img id="balance" src={tfuel} alt="TFUEL Logo" />
               </div>
               <div className="ps-3">
                 <h6>{tfuelBalance} TFUEL</h6>
@@ -108,7 +113,7 @@ const Sidebar = () => {
                     padding: "10px",
                   }}
                 >
-                  <img src={useimage} alt="" />
+                  <img src={useimage} alt="User" />
                   <h4>
                     <a href="#">{card.title}</a>
                   </h4>

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import useimage from "../assets/address.jpg";
 import Modal from "./Modal";
 import { Link } from "react-router-dom";
+import tfuel from "../assets/img/tfuel.jpg";
 
 const cardData = [
   {
@@ -99,7 +100,18 @@ const Topquiz = () => {
                               {/* First word with icon */}
                               <div>
                                 <span style={{ color: "#b1bad3" }}>
-                                  POOL: {card.pool} THETA
+                                  POOL:{" "}
+                                  <img
+                                    src={tfuel}
+                                    alt="Theta Logo"
+                                    style={{
+                                      width: "20px",
+                                      borderRadius: "50%",
+                                      height: "20px",
+                                      marginLeft: "4px",
+                                    }}
+                                  />{" "}
+                                  {card.pool}
                                 </span>
                               </div>
                               {/* Second word */}
