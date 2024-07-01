@@ -8,23 +8,25 @@ import { ethers } from "ethers";
 import { BsCheckCircle } from "react-icons/bs";
 import Quiztheory from "./Quiztheory";
 import Paticipants from "./Paticipants";
+import theta from "../assets/img/theta.jpg";
+import tfuel from "../assets/img/tfuel.jpg";
 
 const cardData = [
   {
     badgeColor: "primary",
-    badgeText: "Bronze 10STX",
+    badgeText: "Bronze 10 TFUEL",
     range: "60% - 69%",
     items: ["Naccy buu", "sia funky", "Pinat van"],
   },
   {
     badgeColor: "success",
-    badgeText: "Silver 20STX",
+    badgeText: "Silver 20 TFUEL",
     range: "70% - 79%",
     items: ["Natmas", "Tolujohn", "Huun gss"],
   },
   {
     badgeColor: "warning",
-    badgeText: "Gold 50STX",
+    badgeText: "Gold 50 TFUEL",
     range: "80% - 100%",
     items: ["Tolujohn", "Faih jon", "Percy mat"],
   },
@@ -111,7 +113,7 @@ const QuizInfo = () => {
                   </h4>
                   <div className="d-flex justify-content-between align-items-center">
                     <div>
-                      <span className="badge bg-warning">upcoming</span>
+                      <span className="badge bg-success">Live</span>
                     </div>
                     <div className="d-flex align-items-center">
                       <i className="bi bi-globe"> </i>{" "}
@@ -123,7 +125,18 @@ const QuizInfo = () => {
                   <div className="d-flex justify-content-between align-items-center">
                     <div>
                       <span style={{ color: "#b1bad3" }}>
-                        Fee: {quiz.entranceFee} TFUEL
+                        Fee:{" "}
+                        <img
+                          src={tfuel}
+                          alt="Theta Logo"
+                          style={{
+                            width: "20px",
+                            borderRadius: "50%",
+                            height: "20px",
+                            marginLeft: "4px",
+                          }}
+                        />{" "}
+                        {quiz.entranceFee}
                       </span>
                     </div>
                     <div>
@@ -132,7 +145,18 @@ const QuizInfo = () => {
                       </span>
                       <br />
                       <span style={{ color: "#b1bad3" }}>
-                        Pool: {quiz.pricePool} THETA
+                        Pool:{" "}
+                        <img
+                          src={tfuel}
+                          alt="Theta Logo"
+                          style={{
+                            width: "20px",
+                            borderRadius: "50%",
+                            height: "20px",
+                            marginLeft: "4px",
+                          }}
+                        />{" "}
+                        {quiz.pricePool}
                       </span>
                     </div>
                   </div>

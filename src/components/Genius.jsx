@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { useWeb3 } from "../Web3Provider";
 import { ABI, CONTRACT_ADDRESS } from "./Constants";
 import { ethers } from "ethers";
+import theta from "../assets/img/tfuel.jpg";
 
 const cardData = [
   { name: "Jane col", reward: "10", level: "1", id: 1 },
@@ -99,7 +100,7 @@ const Genius = () => {
                         </h4>
                         <div className="d-flex justify-content-between align-items-center">
                           <div>
-                            <span className="badge bg-warning">upcoming</span>
+                            <span className="badge bg-success">Live</span>
                           </div>
                           <div className="d-flex align-items-center">
                             <i className="bi bi-globe"> </i>{" "}
@@ -113,7 +114,18 @@ const Genius = () => {
                             <span
                               style={{ color: "#b1bad3", marginRight: "2rem" }}
                             >
-                              POOL: {quiz.pricePool} THETA
+                              POOL:
+                              <img
+                                src={theta}
+                                alt="Theta Logo"
+                                style={{
+                                  width: "20px",
+                                  borderRadius: "50%",
+                                  height: "20px",
+                                  marginLeft: "4px",
+                                }}
+                              />{" "}
+                              {quiz.pricePool}
                             </span>
                           </div>
                           <div>
